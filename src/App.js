@@ -1,11 +1,16 @@
 import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './components/login/protectedRoute';
 import Login from './components/login/login';
 import Dashboard from './components/Dashboard/dashboard';
 
 function App() {
+
+  const isLoggedIn = localStorage.getItem("isLoggedIn");
+
+
+
   return (
        <BrowserRouter>
       <Routes>
@@ -18,6 +23,10 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/dashboard"
+  element={isLoggedIn ? <Dashboard /> : <Navigate to="/" />}
+/>
       </Routes>
     </BrowserRouter>
 

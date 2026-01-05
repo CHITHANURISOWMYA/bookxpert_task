@@ -1,86 +1,8 @@
-// import {
-//   Drawer,
-//   List,
-//   ListItemButton,
-//   ListItemIcon,
-//   ListItemText,
-//   Toolbar,
-//   Box,
-//   Typography
-// } from "@mui/material";
-
-// import DashboardIcon from "@mui/icons-material/Dashboard";
-// import PeopleIcon from "@mui/icons-material/People";
-// import BusinessIcon from "@mui/icons-material/Business";
-// import WorkIcon from "@mui/icons-material/Work";
-// import AssessmentIcon from "@mui/icons-material/Assessment";
-
-// const drawerWidth = 240;
-
-// export default function Sidebar() {
-//   return (
-//     <Drawer
-//       variant="permanent"
-//       sx={{
-//         width: drawerWidth,
-//         flexShrink: 0,
-//         [`& .MuiDrawer-paper`]: {
-//           width: drawerWidth,
-//           boxSizing: "border-box",
-//         },
-//       }}
-//     >
-//       <Toolbar>
-//         <Typography variant="h6" fontWeight="bold">
-//           Company
-//         </Typography>
-//       </Toolbar>
-
-//       <Box sx={{ overflow: "auto" }}>
-//         <List>
-//           <ListItemButton selected>
-//             <ListItemIcon>
-//               <DashboardIcon />
-//             </ListItemIcon>
-//             <ListItemText primary="Dashboard" />
-//           </ListItemButton>
-
-//           <ListItemButton>
-//             <ListItemIcon>
-//               <PeopleIcon />
-//             </ListItemIcon>
-//             <ListItemText primary="Employees" />
-//           </ListItemButton>
-
-//           <ListItemButton>
-//             <ListItemIcon>
-//               <BusinessIcon />
-//             </ListItemIcon>
-//             <ListItemText primary="Organisation" />
-//           </ListItemButton>
-
-//           <ListItemButton>
-//             <ListItemIcon>
-//               <WorkIcon />
-//             </ListItemIcon>
-//             <ListItemText primary="Projects" />
-//           </ListItemButton>
-
-//           <ListItemButton>
-//             <ListItemIcon>
-//               <AssessmentIcon />
-//             </ListItemIcon>
-//             <ListItemText primary="Reports" />
-//           </ListItemButton>
-//         </List>
-//       </Box>
-//     </Drawer>
-//   );
-// }
 
 
 import {
   Box,
+  Button,
   Drawer,
   List,
   ListItemButton,
@@ -94,6 +16,7 @@ import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 import BusinessOutlinedIcon from "@mui/icons-material/BusinessOutlined";
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
+import { useNavigate } from "react-router-dom";
 
 const drawerWidth = 260;
 
@@ -105,7 +28,17 @@ const menuItems = [
   { label: "Reports", icon: <AssessmentOutlinedIcon />, active: false },
 ];
 
+
 export default function Sidebar() {
+
+    const username = localStorage.getItem("username");
+const navigate = useNavigate();
+
+const handleLogout = () => {
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("username");
+  navigate("/");
+};
   return (
    <Drawer
   variant="permanent"
@@ -196,11 +129,40 @@ export default function Sidebar() {
       </List>
 
       {/* Footer */}
-      <Box sx={{ mt: "auto", px: 3, py: 2 }}>
+      {/* <Box sx={{ mt: "auto", px: 3, py: 2 }}>
         <Typography fontSize={13} color="text.secondary">
           bhavani@vrinda
         </Typography>
-      </Box>
+      </Box> */}
+
+ {/* <div style={{backgroundColor:"aliceblue"}}> */}
+
+         <Box sx={{ mt: "auto", px: 6, py: 2 }}>
+  <Typography fontSize={18} color="#e7eaf0ff" >
+    {username ? `${username}@bookxpert` : "Guest"}
+  </Typography>
+</Box>
+<Box sx={{ px: 3, pb: 2 }}>
+  <Button
+    fullWidth
+    variant="outlined"
+    size="small"
+    onClick={handleLogout}
+    sx={{
+      color: "#fff",
+      borderColor: "#6b7280",
+      textTransform: "capitalize",
+      "&:hover": {
+        backgroundColor: "#374151",
+        borderColor: "#9ca3af",
+      },
+    }}
+  >
+    Logout
+  </Button>
+</Box>
+    {/* </div> */}
+
     </Drawer>
   );
 }

@@ -1,53 +1,4 @@
-// import { Box, Typography } from "@mui/material";
-// import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { Visibility } from '@mui/icons-material';
-// import ContainedButton, { CustomTextField } from "./custumField";
 
-// const Login = () => {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const navigate = useNavigate();
-
-//   const handleLogin = (e) => {
-//     e.preventDefault();
-
-//     // Mock login
-//     if (email && password) {
-//       localStorage.setItem("isLoggedIn", "true");
-//       navigate("/dashboard");
-//     } else {
-//       alert("Enter credentials");
-//     }
-//   };
-
-//   return (
-//     <>
-//     <div className="login-container">
-//       <h2>Employee Dashboard Login</h2>
-//       <form onSubmit={handleLogin}>
-//         <input
-//           placeholder="Email"
-//           value={email}
-//           onChange={(e) => setEmail(e.target.value)}
-//         />
-//         <input
-//           type="password"
-//           placeholder="Password"
-//           value={password}
-//           onChange={(e) => setPassword(e.target.value)}
-//         />
-//         <button>Login</button>
-//       </form>
-//     </div>
-
-
-//     </>
-
-//   );
-// };
-
-// export default Login;
 
 import React, { useState } from "react";
 import {
@@ -75,7 +26,7 @@ const Login = () => {
 });
 
 
- const handleLogin = () => {
+const handleLogin = () => {
   let newErrors = {
     username: "",
     password: "",
@@ -91,15 +42,15 @@ const Login = () => {
 
   setErrors(newErrors);
 
-  // stop login if any error exists
-  if (newErrors.username || newErrors.password) {
-    return;
-  }
+  if (newErrors.username || newErrors.password) return;
 
-  // Mock login success
+  // ✅ Save user info
   localStorage.setItem("isLoggedIn", "true");
+  localStorage.setItem("username", username);
+
   navigate("/dashboard");
 };
+
 
 
   return (

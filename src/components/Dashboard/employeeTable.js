@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Avatar,
   IconButton,
@@ -11,7 +12,14 @@ import {
   Paper,
   Box,
   Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
 } from "@mui/material";
+
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PrintIcon from "@mui/icons-material/Print";
@@ -28,7 +36,54 @@ export default function EmployeeTable({ employees, setEmployees ,onToggleStatus,
     );
   };
 
+  const [open, setOpen] = useState(false);
+const [selectedEmployee, setSelectedEmployee] = useState(null);
+
+const handleDeleteClick = (emp) => {
+  setSelectedEmployee(emp);
+  setOpen(true);
+};
+
+const handleClose = () => {
+  setOpen(false);
+  setSelectedEmployee(null);
+};
+
+const handleConfirmDelete = () => {
+  onDelete(selectedEmployee?.id);
+  handleClose();
+};
+
+
+
   return (
+<>
+    <Dialog open={open} onClose={handleClose}>
+  <DialogTitle>Confirm Delete</DialogTitle>
+
+  <DialogContent>
+    <DialogContentText>
+      Are you sure you want to delete{" "}
+      <strong>{selectedEmployee?.name}</strong>?
+      <br />
+      This action cannot be undone.
+    </DialogContentText>
+  </DialogContent>
+
+  <DialogActions sx={{width:"400px"}}>
+    <Button onClick={handleClose} color="inherit">
+      Cancel
+    </Button>
+    <Button
+      onClick={handleConfirmDelete}
+      color="error"
+      variant="contained"
+    >
+      Delete
+    </Button>
+  </DialogActions>
+</Dialog>
+
     <TableContainer component={Paper}>
       <Table>
         <TableHead>
@@ -84,7 +139,7 @@ export default function EmployeeTable({ employees, setEmployees ,onToggleStatus,
                 <IconButton color="primary" onClick={() => onEdit(emp)}>
   <EditIcon />
 </IconButton>
-              <IconButton color="error" onClick={() => onDelete(emp.id)}>
+             <IconButton color="error" onClick={() => handleDeleteClick(emp)}>
   <DeleteIcon />
 </IconButton>
                <IconButton onClick={() => printEmployee(emp)}>
@@ -98,5 +153,7 @@ export default function EmployeeTable({ employees, setEmployees ,onToggleStatus,
 
       </Table>
     </TableContainer>
+
+    </>
   );
 }
