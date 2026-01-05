@@ -164,6 +164,11 @@ const Login = () => {
             setUsername(e.target.value);
             setErrors({ ...errors, username: "" });
           }}
+            sx={{
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "10px",
+    },
+  }}
           error={Boolean(errors.username)}
           helperText={errors.username}
           InputProps={{
@@ -223,6 +228,11 @@ const Login = () => {
             setPassword(e.target.value);
             setErrors({ ...errors, password: "" });
           }}
+             sx={{
+    "& .MuiOutlinedInput-root": {
+      borderRadius: "10px",
+    },
+  }}
           error={Boolean(errors.password)}
           helperText={errors.password}
           InputProps={{
@@ -273,11 +283,11 @@ const Login = () => {
 
         {/* Register Section */}
         <Typography sx={{ fontWeight: 700, fontSize: 14 }}>
-          New to Paramitha Hospital ?
+          New to BookXpert ?
         </Typography>
 
         <Typography sx={{ fontSize: 13, mt: 0.5 }}>
-          Is this the first time you are visiting our Hospital or Website ? If yes,
+          Is this the first time you are visiting our  Website ? If yes,
           Click Register Now to Signup
         </Typography>
 

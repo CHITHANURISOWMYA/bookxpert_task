@@ -1,117 +1,193 @@
-import React, { useState, useEffect } from "react";
-// import EmployeeForm from "./EmployeeForm";
 
-const Dashboard = () => {
+
+import { useEffect, useState } from "react";
+import { Box, Button, Paper, Typography } from "@mui/material";
+import SummaryCards from "./summaryCard";
+import EmployeeTable from "./employeeTable";
+// import { getEmployees } from "../service/mockdata";
+import Layout from "./layout";
+import {   
+  getEmployees,
+  addEmployee,
+  updateEmployee,
+  deleteEmployee,
+ } from "../service/employeeAPI.js";
+import EmployeeFormDrawer from "./employeeform.js";
+import EmployeeSearchFilter from "./employeeFilter.js";
+import bgImage from '../../assets/images/imageBG.png';
+
+
+export default function Dashboard() {
   const [employees, setEmployees] = useState([]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
   const [search, setSearch] = useState("");
-  const [filterGender, setFilterGender] = useState("");
-  const [filterStatus, setFilterStatus] = useState("");
+const [gender, setGender] = useState("");
+const [status, setStatus] = useState("");
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("employees")) || [];
-    setEmployees(data);
+    loadEmployees();
   }, []);
 
-  const saveEmployees = (data) => {
+  const filteredEmployees = employees.filter((emp) => {
+  const matchesSearch = emp.name
+    .toLowerCase()
+    .includes(search.toLowerCase());
+
+  const matchesGender = gender ? emp.gender === gender : true;
+
+  const matchesStatus =
+    status === ""
+      ? true
+      : status === "active"
+      ? emp.active
+      : !emp.active;
+
+  return matchesSearch && matchesGender && matchesStatus;
+});
+
+const handleReset = () => {
+  setSearch("");
+  setGender("");
+  setStatus("");
+};
+  const loadEmployees = async () => {
+    const data = await getEmployees();
     setEmployees(data);
-    localStorage.setItem("employees", JSON.stringify(data));
   };
 
-  const deleteEmployee = (id) => {
-    if (window.confirm("Delete employee?")) {
-      saveEmployees(employees.filter((e) => e.id !== id));
+  const handleAddClick = () => {
+    setEditingEmployee(null);
+    setDrawerOpen(true);
+  };
+
+  const handleEditClick = (emp) => {
+    setEditingEmployee(emp);
+    setDrawerOpen(true);
+  };
+
+  const handleSubmit = async (formData) => {
+    if (editingEmployee) {
+      const updated = await updateEmployee(editingEmployee.id, {
+        ...editingEmployee,
+        ...formData,
+      });
+
+      setEmployees((prev) =>
+        prev.map((e) => (e.id === updated.id ? updated : e))
+      );
+    } else {
+      const saved = await addEmployee({
+        ...formData,
+        empId: `EMP00${employees.length + 1}`,
+      });
+      setEmployees((prev) => [...prev, saved]);
     }
+
+    setDrawerOpen(false);
   };
 
-  const filteredEmployees = employees.filter((e) => {
-    return (
-      e.name.toLowerCase().includes(search.toLowerCase()) &&
-      (filterGender ? e.gender === filterGender : true) &&
-      (filterStatus ? String(e.active) === filterStatus : true)
+  const handleToggleStatus = async (emp) => {
+    const updated = await updateEmployee(emp.id, {
+      ...emp,
+      active: !emp.active,
+    });
+
+    setEmployees((prev) =>
+      prev.map((e) => (e.id === emp.id ? updated : e))
     );
-  });
+  };
+
+  const handleDelete = async (id) => {
+    await deleteEmployee(id);
+    setEmployees((prev) => prev.filter((e) => e.id !== id));
+  };
+
+
 
   return (
-    <div className="dashboard">
-      <h2>Employee Management Dashboard</h2>
+    <>
+    <div
+  style={{
+    backgroundImage: `url(${bgImage})`,
+    backgroundSize: "cover",      // cover entire screen
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+    minHeight: "100vh",
+    backgroundAttachment: "fixed", // <-- this makes it fixed while scrolling
+  }}
+>
+   
+    <Layout>
+      {/* <Typography variant="h4" gutterBottom>
+        Welcome to Company, Inc.
+      </Typography>
 
-      <div className="summary">
-        <p>Total Employees: {employees.length}</p>
-        <p>Active: {employees.filter(e => e.active).length}</p>
-        <p>Inactive: {employees.filter(e => !e.active).length}</p>
-      </div>
+      <Button variant="contained" sx={{ mb: 3 }} onClick={handleAddClick}>
+        Add Employee
+      </Button> */}
 
-      {/* <EmployeeForm
-        employees={employees}
-        saveEmployees={saveEmployees}
+ <SummaryCards employees={employees} onAddClick={handleAddClick} />
+  
+
+<Paper
+  elevation={0}
+  sx={{
+    p: 3,
+    mb: 4,
+    borderRadius: 2,
+    border: "1px solid #eef2f7",
+  }}
+>
+  <Typography fontWeight={600} mb={0.5}>
+    Employee Search
+  </Typography>
+  <Typography fontSize={13} color="text.secondary" mb={2}>
+    Search employees by name and filter by status
+  </Typography>
+
+  <EmployeeSearchFilter
+    search={search}
+    setSearch={setSearch}
+    gender={gender}
+    setGender={setGender}
+    status={status}
+    setStatus={setStatus}
+    onReset={handleReset}
+  />
+</Paper>
+
+
+<Paper
+  elevation={0}
+  sx={{
+    borderRadius: 2,
+    border: "1px solid #eef2f7",
+    overflow: "hidden",
+  }}
+>
+  <EmployeeTable
+    employees={filteredEmployees}
+    onEdit={handleEditClick}
+    onToggleStatus={handleToggleStatus}
+    onDelete={handleDelete}
+    addEmployee={handleAddClick}
+  />
+</Paper>
+
+
+
+      <EmployeeFormDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
         editingEmployee={editingEmployee}
-        setEditingEmployee={setEditingEmployee}
-      /> */}
-
-      <div className="filters">
-        <input
-          placeholder="Search Name"
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select onChange={(e) => setFilterGender(e.target.value)}>
-          <option value="">All Genders</option>
-          <option>Male</option>
-          <option>Female</option>
-        </select>
-        <select onChange={(e) => setFilterStatus(e.target.value)}>
-          <option value="">All Status</option>
-          <option value="true">Active</option>
-          <option value="false">Inactive</option>
-        </select>
-      </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Gender</th>
-            <th>DOB</th>
-            <th>State</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredEmployees.map((e) => (
-            <tr key={e.id}>
-              <td>{e.id}</td>
-              <td><img src={e.image} alt="" width="40" /></td>
-              <td>{e.name}</td>
-              <td>{e.gender}</td>
-              <td>{e.dob}</td>
-              <td>{e.state}</td>
-              <td>
-                <input
-                  type="checkbox"
-                  checked={e.active}
-                  onChange={() => {
-                    saveEmployees(
-                      employees.map(emp =>
-                        emp.id === e.id ? { ...emp, active: !emp.active } : emp
-                      )
-                    );
-                  }}
-                />
-              </td>
-              <td>
-                <button onClick={() => setEditingEmployee(e)}>Edit</button>
-                <button onClick={() => deleteEmployee(e.id)}>Delete</button>
-                <button onClick={() => window.print()}>Print</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        onSubmit={handleSubmit}
+      />
+    </Layout>
     </div>
+    </>
   );
-};
+}
 
-export default Dashboard;
+
+
