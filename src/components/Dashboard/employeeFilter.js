@@ -4,7 +4,6 @@ import {
   CardContent,
   TextField,
   MenuItem,
-  Typography,
   InputAdornment,
   IconButton,
 } from "@mui/material";
@@ -23,12 +22,6 @@ export default function EmployeeSearchFilter({
   return (
     <Card sx={{ mb: 3 }}>
       <CardContent>
-        {/* <Typography fontWeight={600} mb={0.5}>
-          Employee Search
-        </Typography>
-        <Typography fontSize={13} color="text.secondary" mb={2}>
-          Search employees by name
-        </Typography> */}
 
         <Box display="flex" gap={2} flexWrap="wrap">
           {/* Search */}

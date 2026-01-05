@@ -1,6 +1,5 @@
 import { Box } from "@mui/material";
 import Sidebar from "./sidebar";
-import img from "../../assets/images/imageBG.png"
 
 const drawerWidth = 24;
 

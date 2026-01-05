@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardContent, Grid, Stack, Typography } from "@mui/material";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 
 const SummaryCard = ({ title, value ,onAddClick}) => (
 
@@ -60,20 +60,13 @@ const SummaryCard = ({ title, value ,onAddClick}) => (
 export default function SummaryCards({ employees,onAddClick}
  ) {
   const total = employees.length;
-  const active = employees.filter(e => e.active).length;
-  const inactive = total - active;
+ 
 
   return (
     <Grid container spacing={2} sx={{ mb: 3 }}>
       <Grid item xs={12} md={4}>
         <SummaryCard title="Total Employees" value={total} onAddClick={onAddClick} />
       </Grid>
-      {/* <Grid item xs={12} md={4}>
-        <SummaryCard title="Active Employees" value={active} />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <SummaryCard title="Inactive Employees" value={inactive} />
-      </Grid> */}
     </Grid>
   );
 }

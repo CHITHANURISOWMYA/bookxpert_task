@@ -23,18 +23,11 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PrintIcon from "@mui/icons-material/Print";
-import { AddAPhoto, GroupAdd, People } from "@mui/icons-material";
+import {  GroupAdd } from "@mui/icons-material";
 import { printEmployee } from "../../utils/printEmployee";
 
 export default function EmployeeTable({ employees, setEmployees ,onToggleStatus, onDelete,  onEdit,addEmployee}) {
 
-  const toggleStatus = (id) => {
-    setEmployees(prev =>
-      prev.map(emp =>
-        emp.id === id ? { ...emp, active: !emp.active } : emp
-      )
-    );
-  };
 
   const [open, setOpen] = useState(false);
 const [selectedEmployee, setSelectedEmployee] = useState(null);
